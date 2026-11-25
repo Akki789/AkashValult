@@ -1,6 +1,21 @@
 export const MIN_AGE_YEARS = Number(import.meta.env.VITE_MIN_AGE_YEARS) || 18;
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+function resolveApiBaseUrl() {
+  const raw = (import.meta.env.VITE_API_BASE_URL || '/api').trim().replace(/\/+$/, '');
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      const parsed = new URL(raw);
+      if (parsed.pathname === '/' || parsed.pathname === '') {
+        return `${parsed.origin}/api`;
+      }
+    } catch {
+      return raw;
+    }
+  }
+  return raw;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export const COUNTRY_CODES = [
   { code: '+1', label: 'US / CA (+1)' },

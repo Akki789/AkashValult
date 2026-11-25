@@ -13,7 +13,11 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(5000),
-  APP_ORIGIN: z.string().url().default('http://localhost:5173'),
+  APP_ORIGIN: z
+    .string()
+    .url()
+    .default('http://localhost:5173')
+    .transform((val) => new URL(val).origin),
   MONGODB_URI: z.string().min(1).default('mongodb://127.0.0.1:27017/akashvault'),
 
   JWT_ACCESS_SECRET: z.string().min(32).optional(),
@@ -28,6 +32,7 @@ const envSchema = z.object({
     .enum(['true', 'false'])
     .optional()
     .transform((v) => v === 'true'),
+  COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).optional(),
 
   MIN_AGE_YEARS: z.coerce.number().int().min(13).max(120).default(18),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
@@ -95,6 +100,7 @@ export function loadEnv(overrides = {}) {
     REFRESH_HMAC_SECRET:
       data.REFRESH_HMAC_SECRET || 'dev-only-refresh-hmac-secret-min-32-chars-long',
     COOKIE_SECURE: isProd ? true : Boolean(data.COOKIE_SECURE),
+    COOKIE_SAME_SITE: data.COOKIE_SAME_SITE || (isProd ? 'none' : 'lax'),
   };
 }
 

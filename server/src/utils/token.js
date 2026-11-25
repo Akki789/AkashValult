@@ -65,7 +65,7 @@ export function getCookieOptions({ httpOnly = true, maxAgeMs } = {}) {
   return {
     httpOnly,
     secure: env.COOKIE_SECURE,
-    sameSite: 'lax',
+    sameSite: env.COOKIE_SAME_SITE,
     path: '/',
     ...(typeof maxAgeMs === 'number' ? { maxAge: maxAgeMs } : {}),
   };
