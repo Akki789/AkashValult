@@ -1,0 +1,12 @@
+{
+  "name": "akashvault",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade MERN user authentication system with OTP verification, 6-digit PIN, single active device enforcement, and atomic account lockout.",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build"
+  }
+}
