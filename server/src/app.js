@@ -58,6 +58,14 @@ export function createApp({ forceEnableRateLimitInTest = false } = {}) {
   app.use('/api', limiters.globalApiLimiter);
   app.use('/api', csrfProtection);
 
+  app.get('/', (_req, res) => {
+    res.status(200).json({
+      success: true,
+      message: 'AkashVault API is running.',
+      data: { health: '/api/health' },
+    });
+  });
+
   app.get('/api/health', (_req, res) => {
     res.status(200).json({
       success: true,
