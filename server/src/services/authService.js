@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { env } from '../config/env.js';
 import { User } from '../models/User.js';
 import { PendingRegistration } from '../models/PendingRegistration.js';
