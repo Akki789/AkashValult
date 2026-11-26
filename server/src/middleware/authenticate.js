@@ -95,8 +95,12 @@ export async function authenticateSession(req, res, next) {
       return sendError(res, 401, 'SESSION_EXPIRED', 'Your session has expired. Please sign in again.');
     }
 
-    // Update lastActivityAt asynchronously without blocking request
-    Session.updateOne({ _id: session._id }, { $set: { lastActivityAt: now } }).catch(() => {});
+    // Update lastActivityAt on active API actions (skip background /session heartbeat polls)
+    if (req.path !== '/session') {
+      Session.updateOne({ _id: session._id }, { $set: { lastActivityAt: now } }).catch(
+        () => {}
+      );
+    }
 
     req.user = user;
     req.session = session;

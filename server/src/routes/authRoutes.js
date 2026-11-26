@@ -95,7 +95,13 @@ export function createAuthRouter(limiters) {
   );
 
   router.get('/me', authenticateSession, validateRequest(), getMe);
-  router.get('/session', authenticateSession, validateRequest(), getSession);
+  router.get(
+    '/session',
+    limiters.sessionCheckLimiter,
+    authenticateSession,
+    validateRequest(),
+    getSession
+  );
 
   return router;
 }

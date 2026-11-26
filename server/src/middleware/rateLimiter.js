@@ -22,9 +22,22 @@ export function createRateLimiters({ forceEnableInTest = false } = {}) {
     max: 200,
     standardHeaders: true,
     legacyHeaders: false,
-    skip: shouldSkip,
+    skip: (req) =>
+      shouldSkip() || (req.method === 'GET' && req.path === '/auth/session'),
     handler: createRateLimitHandler(
       'Too many requests from this network. Please pause and try again shortly.'
+    ),
+  });
+
+  // Generous limiter for active session heartbeat checks
+  const sessionCheckLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 600,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: shouldSkip,
+    handler: createRateLimitHandler(
+      'Too many session status checks. Please pause and try again shortly.'
     ),
   });
 
@@ -91,6 +104,7 @@ export function createRateLimiters({ forceEnableInTest = false } = {}) {
 
   return {
     globalApiLimiter,
+    sessionCheckLimiter,
     loginIpLimiter,
     loginAccountLimiter,
     otpSendLimiter,
